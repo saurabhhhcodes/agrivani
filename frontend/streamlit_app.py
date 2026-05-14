@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-import asyncio
+import csv
+import hashlib
 import os
 from pathlib import Path
 
@@ -8,15 +9,15 @@ import requests
 import streamlit as st
 import streamlit.components.v1 as components
 from dotenv import load_dotenv
-
-from backend.app.config import BASE_DIR, get_settings
-from backend.app.models import FarmerQuery, Language
-from backend.app.services.gemini_agent import GeminiAgent
-from backend.app.services.mandi_price_engine import MandiPriceEngine
-from backend.app.services.tts_service import ElevenLabsTTS
+from gtts import gTTS
 
 
 load_dotenv()
+
+BASE_DIR = Path(__file__).resolve().parents[1]
+DATA_PATH = BASE_DIR / "data" / "historical_mandi_prices.csv"
+AUDIO_DIR = BASE_DIR / "backend" / "static" / "audio"
+AUDIO_DIR.mkdir(parents=True, exist_ok=True)
 
 for secret_name in [
     "GEMINI_API_KEY",
@@ -167,10 +168,6 @@ BROWSER_SPEECH_LANGS = {
 }
 
 
-def run_async(coro):
-    return asyncio.run(coro)
-
-
 def backend_health() -> bool:
     try:
         response = requests.get(f"{API_BASE}/health", timeout=1.5)
@@ -183,37 +180,156 @@ BACKEND_AVAILABLE = backend_health()
 
 
 def local_price(crop: str, market: str, state: str) -> dict:
-    settings = get_settings()
-    engine = MandiPriceEngine(settings.historical_csv_path)
-    return run_async(engine.get_price(crop, market, state)).model_dump()
+    rows = []
+    with DATA_PATH.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            for key in ["min_price", "modal_price", "max_price"]:
+                row[key] = float(row[key])
+            rows.append(row)
+
+    def matches(row, exact_market: bool) -> bool:
+        crop_ok = row["crop"].lower() == crop.lower()
+        state_ok = state == "India" or row["state"].lower() == state.lower()
+        market_ok = row["market"].lower() == market.lower() if exact_market else True
+        return crop_ok and state_ok and market_ok
+
+    sample = [row for row in rows if matches(row, True)]
+    confidence = 0.79
+    if len(sample) < 3:
+        sample = [row for row in rows if matches(row, False)]
+        confidence = 0.64
+    if len(sample) < 3:
+        sample = [row for row in rows if row["crop"].lower() == crop.lower()]
+        confidence = 0.52
+    if len(sample) < 3:
+        sample = rows
+        confidence = 0.4
+
+    sample = sorted(sample, key=lambda row: row["date"])[-8:]
+    weights = list(range(1, len(sample) + 1))
+    total_weight = sum(weights)
+
+    def weighted(column: str) -> float:
+        return round(sum(row[column] * weight for row, weight in zip(sample, weights)) / total_weight, 2)
+
+    return {
+        "crop": crop,
+        "market": market,
+        "state": state,
+        "min_price": weighted("min_price"),
+        "modal_price": weighted("modal_price"),
+        "max_price": weighted("max_price"),
+        "unit": "INR/quintal",
+        "source": "historical_csv_ai_prediction",
+        "confidence": confidence,
+        "explanation": (
+            "Agmarknet live backend is not available in Streamlit Cloud mode. "
+            "This price is an AI-assisted prediction from recent historical CSV trends."
+        ),
+        "observations": [
+            {
+                "date": row["date"],
+                "crop": row["crop"],
+                "market": row["market"],
+                "state": row["state"],
+                "min_price": row["min_price"],
+                "modal_price": row["modal_price"],
+                "max_price": row["max_price"],
+            }
+            for row in sample
+        ],
+    }
+
+
+def mock_answer(query: str, language: str, price: dict) -> str:
+    if language == "en":
+        return (
+            f"Quick advisory: The expected modal price for {price['crop']} in "
+            f"{price['market']} is INR {price['modal_price']}/quintal. Check local arrivals, "
+            "compare transport cost, and avoid distress selling when prices are volatile."
+        )
+    if language == "mr":
+        return (
+            f"जलद सल्ला: {price['market']} मध्ये {price['crop']} चा अंदाजे भाव "
+            f"{price['modal_price']} रुपये/क्विंटल आहे. स्थानिक आवक तपासा आणि विक्री टप्प्याटप्प्याने करा."
+        )
+    return (
+        f"त्वरित सलाह: {price['market']} में {price['crop']} का अनुमानित मॉडल भाव "
+        f"{price['modal_price']} रुपये/क्विंटल है. स्थानीय आवक देखें, जल्दबाज़ी में बिक्री न करें, "
+        "और भाव बदलने पर किस्तों में बेचें."
+    )
+
+
+def ollama_answer(query: str, language: str, price: dict) -> str | None:
+    provider = os.getenv("AI_PROVIDER", "mock").lower()
+    base_url = os.getenv("OLLAMA_BASE_URL", "").strip()
+    if provider != "ollama" or not base_url:
+        return None
+    prompt = (
+        "You are AgriVani, a practical agricultural advisor for Indian farmers. "
+        f"Answer in language code {language}. Question: {query}. "
+        f"Mandi context: {price}"
+    )
+    try:
+        response = requests.post(
+            f"{base_url.rstrip('/')}/api/chat",
+            json={
+                "model": os.getenv("OLLAMA_MODEL", "llama3.1:8b"),
+                "stream": False,
+                "messages": [
+                    {"role": "system", "content": "Keep answers short, actionable, and farmer-friendly."},
+                    {"role": "user", "content": prompt},
+                ],
+            },
+            timeout=float(os.getenv("OLLAMA_TIMEOUT_SECONDS", "2")),
+        )
+        response.raise_for_status()
+        return response.json().get("message", {}).get("content", "").strip() or None
+    except Exception:
+        return None
+
+
+def make_audio(text: str, language: str) -> str | None:
+    gtts_language = {
+        "bn": "bn",
+        "en": "en",
+        "gu": "gu",
+        "hi": "hi",
+        "kn": "kn",
+        "ml": "ml",
+        "mr": "mr",
+        "ne": "ne",
+        "or": "or",
+        "pa": "pa",
+        "ta": "ta",
+        "te": "te",
+        "ur": "ur",
+    }.get(language, "hi")
+    digest = hashlib.sha256(f"streamlit-cloud:{language}:{text}".encode("utf-8")).hexdigest()[:18]
+    audio_path = AUDIO_DIR / f"{digest}.mp3"
+    if not audio_path.exists():
+        try:
+            gTTS(text=text[:1400], lang=gtts_language, slow=False).save(str(audio_path))
+        except Exception:
+            return None
+    return str(audio_path)
 
 
 def local_agent(query: str, language: str, crop: str, market: str, state: str) -> dict:
-    settings = get_settings()
-    price = run_async(MandiPriceEngine(settings.historical_csv_path).get_price(crop, market, state))
-    farmer_query = FarmerQuery(
-        text=query,
-        language=Language(language),
-        crop=crop,
-        market=market,
-        state=state,
-    )
-    answer_text = run_async(GeminiAgent(settings).answer(farmer_query, price))
-    audio_url = run_async(ElevenLabsTTS(settings).synthesize(answer_text, language))
-    audio_path = None
-    if audio_url:
-        audio_path = BASE_DIR / "backend" / audio_url.lstrip("/")
+    price = local_price(crop, market, state)
+    answer_text = ollama_answer(query, language, price) or mock_answer(query, language, price)
+    audio_path = make_audio(answer_text, language)
     return {
         "answer_text": answer_text,
         "language": language,
-        "mandi_price": price.model_dump(),
+        "mandi_price": price,
         "advisory": [
             "Check today arrivals before selling.",
             "Compare nearest mandi and transport cost.",
             "Use predicted prices as guidance when live data is unavailable.",
         ],
-        "audio_url": audio_url,
-        "audio_path": str(audio_path) if audio_path and audio_path.exists() else None,
+        "audio_url": None,
+        "audio_path": audio_path,
     }
 
 
@@ -533,8 +649,10 @@ with right:
         if BACKEND_AVAILABLE:
             coverage = requests.get(f"{API_BASE}/api/india/coverage", timeout=3).json()
         else:
-            settings = get_settings()
-            coverage = {"ai_provider": settings.ai_provider, "ollama_model": settings.ollama_model}
+            coverage = {
+                "ai_provider": os.getenv("AI_PROVIDER", "mock"),
+                "ollama_model": os.getenv("OLLAMA_MODEL", "llama3.1:8b"),
+            }
         st.caption(f"AI provider: {coverage['ai_provider']} | Ollama model: {coverage['ollama_model']}")
     except Exception:
         pass
