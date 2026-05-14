@@ -1,0 +1,117 @@
+date,crop,market,state,min_price,modal_price,max_price,arrival_tonnes
+2025-12-01,Onion,Pune,Maharashtra,1450,1720,2050,440
+2025-12-08,Onion,Pune,Maharashtra,1500,1810,2140,420
+2025-12-15,Onion,Pune,Maharashtra,1480,1780,2100,465
+2025-12-22,Onion,Pune,Maharashtra,1600,1920,2280,395
+2026-01-05,Onion,Pune,Maharashtra,1660,2010,2400,372
+2026-01-12,Onion,Pune,Maharashtra,1700,2090,2480,350
+2026-01-19,Onion,Pune,Maharashtra,1680,2040,2440,386
+2026-01-26,Onion,Pune,Maharashtra,1750,2160,2590,342
+2026-02-02,Onion,Nashik,Maharashtra,1380,1650,1980,510
+2026-02-09,Onion,Nashik,Maharashtra,1420,1730,2060,482
+2026-02-16,Onion,Nashik,Maharashtra,1510,1850,2200,438
+2026-02-23,Onion,Nashik,Maharashtra,1490,1810,2160,455
+2026-03-02,Onion,Lasalgaon,Maharashtra,1320,1580,1900,720
+2026-03-09,Onion,Lasalgaon,Maharashtra,1410,1690,2020,690
+2026-03-16,Onion,Lasalgaon,Maharashtra,1460,1760,2090,650
+2026-03-23,Onion,Lasalgaon,Maharashtra,1520,1840,2190,625
+2025-12-01,Tomato,Pune,Maharashtra,900,1180,1460,180
+2025-12-08,Tomato,Pune,Maharashtra,940,1250,1520,172
+2025-12-15,Tomato,Pune,Maharashtra,1010,1320,1660,160
+2025-12-22,Tomato,Pune,Maharashtra,980,1280,1590,177
+2026-01-05,Tomato,Nagpur,Maharashtra,820,1120,1400,210
+2026-01-12,Tomato,Nagpur,Maharashtra,870,1190,1510,196
+2026-01-19,Tomato,Nagpur,Maharashtra,910,1230,1560,184
+2026-01-26,Tomato,Nagpur,Maharashtra,890,1210,1540,190
+2025-12-01,Soybean,Indore,Madhya Pradesh,3900,4250,4620,620
+2025-12-08,Soybean,Indore,Madhya Pradesh,3980,4330,4700,600
+2025-12-15,Soybean,Indore,Madhya Pradesh,4020,4380,4770,575
+2025-12-22,Soybean,Indore,Madhya Pradesh,4070,4440,4820,560
+2026-01-05,Wheat,Delhi,Delhi,2350,2580,2810,330
+2026-01-12,Wheat,Delhi,Delhi,2390,2630,2860,315
+2026-01-19,Wheat,Delhi,Delhi,2420,2660,2890,306
+2026-01-26,Wheat,Delhi,Delhi,2440,2690,2920,298
+2026-02-02,Cotton,Nagpur,Maharashtra,6100,6720,7350,260
+2026-02-09,Cotton,Nagpur,Maharashtra,6240,6860,7480,252
+2026-02-16,Cotton,Nagpur,Maharashtra,6300,6940,7560,240
+2026-02-23,Cotton,Nagpur,Maharashtra,6410,7050,7690,232
+2026-03-01,Onion,Lucknow,Uttar Pradesh,1220,1510,1840,390
+2026-03-08,Onion,Lucknow,Uttar Pradesh,1280,1580,1920,365
+2026-03-15,Onion,Lucknow,Uttar Pradesh,1320,1630,1980,350
+2026-03-22,Onion,Lucknow,Uttar Pradesh,1370,1700,2050,330
+2026-03-01,Potato,Lucknow,Uttar Pradesh,760,980,1220,540
+2026-03-08,Potato,Lucknow,Uttar Pradesh,800,1030,1280,520
+2026-03-15,Potato,Lucknow,Uttar Pradesh,820,1060,1320,505
+2026-03-22,Potato,Lucknow,Uttar Pradesh,850,1100,1360,492
+2026-03-01,Wheat,Kanpur,Uttar Pradesh,2260,2490,2730,430
+2026-03-08,Wheat,Kanpur,Uttar Pradesh,2300,2530,2780,415
+2026-03-15,Wheat,Kanpur,Uttar Pradesh,2330,2570,2820,402
+2026-03-22,Wheat,Kanpur,Uttar Pradesh,2360,2600,2860,388
+2026-03-01,Rice,Kolkata,West Bengal,2450,2760,3080,360
+2026-03-08,Rice,Kolkata,West Bengal,2490,2810,3140,345
+2026-03-15,Rice,Kolkata,West Bengal,2520,2850,3190,332
+2026-03-22,Rice,Kolkata,West Bengal,2550,2890,3230,320
+2026-03-01,Potato,Kolkata,West Bengal,720,940,1180,610
+2026-03-08,Potato,Kolkata,West Bengal,750,980,1220,590
+2026-03-15,Potato,Kolkata,West Bengal,780,1020,1260,565
+2026-03-22,Potato,Kolkata,West Bengal,800,1050,1300,548
+2026-03-01,Maize,Patna,Bihar,1850,2110,2380,280
+2026-03-08,Maize,Patna,Bihar,1880,2160,2430,270
+2026-03-15,Maize,Patna,Bihar,1910,2200,2480,262
+2026-03-22,Maize,Patna,Bihar,1950,2250,2530,255
+2026-03-01,Tur,Patna,Bihar,7600,8150,8750,155
+2026-03-08,Tur,Patna,Bihar,7740,8300,8900,148
+2026-03-15,Tur,Patna,Bihar,7850,8420,9050,142
+2026-03-22,Tur,Patna,Bihar,7920,8520,9180,136
+2026-03-01,Groundnut,Rajkot,Gujarat,5200,5740,6320,300
+2026-03-08,Groundnut,Rajkot,Gujarat,5320,5860,6450,286
+2026-03-15,Groundnut,Rajkot,Gujarat,5410,5980,6590,275
+2026-03-22,Groundnut,Rajkot,Gujarat,5480,6070,6680,268
+2026-03-01,Mustard,Jaipur,Rajasthan,4620,5060,5520,340
+2026-03-08,Mustard,Jaipur,Rajasthan,4690,5140,5610,328
+2026-03-15,Mustard,Jaipur,Rajasthan,4740,5210,5690,315
+2026-03-22,Mustard,Jaipur,Rajasthan,4810,5290,5780,304
+2026-03-01,Wheat,Ludhiana,Punjab,2320,2550,2790,455
+2026-03-08,Wheat,Ludhiana,Punjab,2360,2600,2830,438
+2026-03-15,Wheat,Ludhiana,Punjab,2390,2630,2870,425
+2026-03-22,Wheat,Ludhiana,Punjab,2420,2670,2920,410
+2026-03-01,Rice,Ludhiana,Punjab,2580,2920,3270,380
+2026-03-08,Rice,Ludhiana,Punjab,2640,2980,3340,365
+2026-03-15,Rice,Ludhiana,Punjab,2680,3030,3390,350
+2026-03-22,Rice,Ludhiana,Punjab,2720,3070,3440,340
+2026-03-01,Tomato,Bengaluru,Karnataka,980,1340,1720,210
+2026-03-08,Tomato,Bengaluru,Karnataka,1050,1420,1820,198
+2026-03-15,Tomato,Bengaluru,Karnataka,1100,1500,1910,188
+2026-03-22,Tomato,Bengaluru,Karnataka,1150,1580,2010,176
+2026-03-01,Maize,Bengaluru,Karnataka,1900,2190,2480,250
+2026-03-08,Maize,Bengaluru,Karnataka,1940,2240,2540,240
+2026-03-15,Maize,Bengaluru,Karnataka,1980,2290,2600,232
+2026-03-22,Maize,Bengaluru,Karnataka,2020,2340,2660,224
+2026-03-01,Chana,Hyderabad,Telangana,5500,6040,6620,230
+2026-03-08,Chana,Hyderabad,Telangana,5580,6150,6750,218
+2026-03-15,Chana,Hyderabad,Telangana,5660,6260,6880,206
+2026-03-22,Chana,Hyderabad,Telangana,5740,6370,7010,198
+2026-03-01,Chilli,Guntur,Andhra Pradesh,11800,13600,15400,120
+2026-03-08,Chilli,Guntur,Andhra Pradesh,12100,13950,15800,114
+2026-03-15,Chilli,Guntur,Andhra Pradesh,12400,14300,16200,108
+2026-03-22,Chilli,Guntur,Andhra Pradesh,12600,14600,16600,102
+2026-03-01,Rice,Chennai,Tamil Nadu,2500,2830,3160,310
+2026-03-08,Rice,Chennai,Tamil Nadu,2550,2880,3220,298
+2026-03-15,Rice,Chennai,Tamil Nadu,2600,2940,3280,286
+2026-03-22,Rice,Chennai,Tamil Nadu,2640,2990,3340,274
+2026-03-01,Tomato,Chennai,Tamil Nadu,1020,1380,1760,205
+2026-03-08,Tomato,Chennai,Tamil Nadu,1080,1460,1870,193
+2026-03-15,Tomato,Chennai,Tamil Nadu,1140,1540,1980,182
+2026-03-22,Tomato,Chennai,Tamil Nadu,1200,1620,2090,170
+2026-03-01,Coconut,Kochi,Kerala,2100,2480,2900,150
+2026-03-08,Coconut,Kochi,Kerala,2160,2550,2980,144
+2026-03-15,Coconut,Kochi,Kerala,2220,2620,3060,138
+2026-03-22,Coconut,Kochi,Kerala,2280,2690,3150,132
+2026-03-01,Rice,Guwahati,Assam,2380,2710,3050,260
+2026-03-08,Rice,Guwahati,Assam,2420,2760,3110,250
+2026-03-15,Rice,Guwahati,Assam,2460,2810,3170,242
+2026-03-22,Rice,Guwahati,Assam,2500,2860,3230,235
+2026-03-01,Tomato,Guwahati,Assam,940,1280,1660,170
+2026-03-08,Tomato,Guwahati,Assam,990,1360,1760,162
+2026-03-15,Tomato,Guwahati,Assam,1040,1440,1860,154
+2026-03-22,Tomato,Guwahati,Assam,1090,1510,1960,148
